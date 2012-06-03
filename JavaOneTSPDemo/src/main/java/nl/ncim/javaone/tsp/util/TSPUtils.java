@@ -64,39 +64,28 @@ public final class TSPUtils {
 		return total;
 	}
 	
-	public static final RenderableLayer createCitiesLayer(String layerName, City[] cities) {
-        // Specify attributes for the foreground line.
+	public static final RenderableLayer createCitiesLayer(String layerName) {
+		RenderableLayer layer = new RenderableLayer();
+		layer.setName(layerName);
+		layer.setPickEnabled(false);
+		return layer;
+	}
+	
+	public static final void buildCitiesLayer(RenderableLayer layer, City[] cities) {
         ShapeAttributes foregroundAttrs = new BasicShapeAttributes();
         foregroundAttrs.setOutlineMaterial(new Material(Color.RED));
-        foregroundAttrs.setOutlineWidth(5);
-
-        // Specify attributes for the background line.
-        ShapeAttributes backgroundAttrs = new BasicShapeAttributes();
-        backgroundAttrs.setOutlineMaterial(new Material(Color.WHITE));
-        backgroundAttrs.setOutlineOpacity(0.1);
-        backgroundAttrs.setOutlineWidth(foregroundAttrs.getOutlineWidth() + 2);
+        foregroundAttrs.setOutlineWidth(3);
 
         List<LatLon> locations = new ArrayList<LatLon>();
         for (City city : cities) {
 			locations.add(LatLon.fromDegrees(city.getLatitude(), city.getLongitude()));
 		}
         
-        // Create the primary line as a SurfacePolyline and set its attributes.
         SurfacePolyline si1 = new SurfacePolyline(locations);
         si1.setClosed(true);
         si1.setAttributes(foregroundAttrs);
-
-        // Create the background SurfacePolyline and set its attributes.
-        SurfacePolyline si2 = new SurfacePolyline(si1.getLocations());
-        si2.setClosed(true);
-        si2.setAttributes(backgroundAttrs);
-						
-		RenderableLayer layer = new RenderableLayer();
-		layer.setName(layerName);
-		layer.setPickEnabled(false);
-		layer.addRenderable(si2);
-		layer.addRenderable(si1);
-		
-		return layer;
+        
+        layer.removeAllRenderables();
+		layer.addRenderable(si1);        
 	}
 }

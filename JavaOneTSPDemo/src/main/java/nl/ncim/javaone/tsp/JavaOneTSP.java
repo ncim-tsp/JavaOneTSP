@@ -1,38 +1,74 @@
 package nl.ncim.javaone.tsp;
 
-import gov.nasa.worldwind.View;
+import gov.nasa.worldwind.BasicModel;
+import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.RenderableLayer;
-import gov.nasa.worldwindx.examples.ApplicationTemplate;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
 import nl.ncim.javaone.tsp.util.TSPUtils;
 
-public class JavaOneTSP extends ApplicationTemplate {
-
-	public static class AppFrame extends ApplicationTemplate.AppFrame {
-		private static final long serialVersionUID = 5875574025750544247L;
+public final class JavaOneTSP {
+	
+	private static final WorldWindowGLCanvas wwd = new WorldWindowGLCanvas();
+	
+	private static final JFrame frame = new AppFrame();
+	
+	private static class AppFrame extends JFrame {
+		
+		private static final long serialVersionUID = 6954901339876266277L;
+		private RenderableLayer layer;
 
 		public AppFrame() {
-			super(true, true, false);
+			initializeWWD();
+			initializeMenu();
+		}
+		
+		private void initializeWWD() {
+			wwd.setPreferredSize(new Dimension(1200, 960));
+			this.getContentPane().add(wwd, BorderLayout.CENTER);
+			this.pack();
+			wwd.setModel(new BasicModel());
+			wwd.getView().setEyePosition(Position.fromDegrees(52.18958, 5.29524, 6e6));
+			layer = TSPUtils.createCitiesLayer("Cities");
+			wwd.getModel().getLayers().add(layer);
+		}
+		
+		private void initializeMenu() {
+			JMenuBar menuBar = new JMenuBar();
+			JMenu menu = new JMenu("Actions");
+			menuBar.add(menu);
 
-			try {
-				RenderableLayer layer = TSPUtils.createCitiesLayer("Cities", TSPUtils.getCities());
-				System.out.println("Total distance: " + TSPUtils.calculateTotalDistance(TSPUtils.getCities()));
-				
-				insertBeforeCompass(this.getWwd(), layer);
-
-				this.getLayerPanel().update(this.getWwd());
-
-				// Move the view to the line locations.
-				View view = getWwd().getView();
-				// Put The Netherlands into view but with enough altitude to display Europe :)
-				view.setEyePosition(Position.fromDegrees(52.18958, 5.29524, 6e6));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			JMenuItem item = new JMenuItem("Randomize Cities");
+			item.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					TSPUtils.buildCitiesLayer(layer, TSPUtils.getRandomizedCities());
+				}
+			});
+			menu.add(item);
+			
+			this.setJMenuBar(menuBar);
 		}
 	}
 
 	public static void main(String[] args) {
-		ApplicationTemplate.start("JavaOne TSP Demo", AppFrame.class);
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				frame.setTitle("JavaOne TSP Demo");
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.setVisible(true);
+			}
+		});
 	}
 }
