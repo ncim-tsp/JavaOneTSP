@@ -9,6 +9,8 @@ import gov.nasa.worldwind.render.SurfacePolyline;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import nl.ncim.javaone.tsp.domain.City;
@@ -45,8 +47,9 @@ public final class TSPUtils {
 	}
 	
 	public static final City[] getRandomizedCities() {
-		// TODO randomize
-		return cities;
+		City[] copy = Arrays.copyOf(cities, cities.length);
+		Collections.shuffle(Arrays.asList(copy));
+		return copy;
 	}
 	
 	public static final long calculateTotalDistance(City[] cities) {
