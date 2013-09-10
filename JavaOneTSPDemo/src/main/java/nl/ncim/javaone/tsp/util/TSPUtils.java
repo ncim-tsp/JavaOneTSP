@@ -1,3 +1,16 @@
+/*
+ * Copyright 2013 (C) NCIM Groep
+ * 
+ * Created on : 
+ * Author     : Niels van Eijck
+ * 
+ * This class is used for the JavaOne Demo on 09/24/2013
+ * for the following session: 
+ * 
+ * Evolutionary Algorithms: The Key to Solving Complex Java Puzzles [BOF2913]
+ *
+ */
+
 package nl.ncim.javaone.tsp.util;
 
 import gov.nasa.worldwind.geom.LatLon;
@@ -46,10 +59,11 @@ public final class TSPUtils {
 		return cities;
 	}
 	
-	public static final City[] getRandomizedCities() {
-		City[] copy = Arrays.copyOf(cities, cities.length);
-		Collections.shuffle(Arrays.asList(copy));
-		return copy;
+	public static final List<City> getRandomizedCities() {
+		//City[] copy = Arrays.copyOf(cities, cities.length);
+		List<City> citiesList = Arrays.asList(Arrays.copyOf(cities, cities.length));
+		Collections.shuffle(citiesList);
+		return citiesList;
 	}
 	
 	public static final long calculateTotalDistance(City[] cities) {
@@ -71,10 +85,10 @@ public final class TSPUtils {
 		return layer;
 	}
 	
-	public static final void buildCitiesLayer(RenderableLayer layer, City[] cities) {
+	public static final void buildCitiesLayer(RenderableLayer layer, List<City> cities) {
         ShapeAttributes foregroundAttrs = new BasicShapeAttributes();
         foregroundAttrs.setOutlineMaterial(new Material(Color.RED));
-        foregroundAttrs.setOutlineWidth(3);
+        foregroundAttrs.setOutlineWidth(2);
 
         List<LatLon> locations = new ArrayList<LatLon>();
         for (City city : cities) {
