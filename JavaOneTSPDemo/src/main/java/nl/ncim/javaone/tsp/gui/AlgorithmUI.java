@@ -358,6 +358,5 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 		String fitnessString = (Double.isNaN(fitness)) ? "" : String.valueOf(fitness);
 		currentFitnessLabel.setText(JavaOneTSPDemoText.LABEL_CURRENT_FITNESS
 				+ ": " + fitnessString);
-		
 	}
 }

@@ -44,6 +44,9 @@ public final class JavaOneTSPDemo {
 	private static final AppFrame frame = new AppFrame();
 
 	private AlgorithmUI algorithmUI;
+	
+	private double currentBestCandidateSolutionFound;
+	private int currentGeneration;
 
 	public JavaOneTSPDemo() {
 		algorithmUI = new AlgorithmUI(this);
@@ -134,8 +137,12 @@ public final class JavaOneTSPDemo {
 				frame.showRoute(candidateSolution.getRoute(),
 						candidateSolution.getFitness());
 				algorithmUI.showAlgorithmInfo(candidateSolution.getFitness(), generation);
+				
 			}
 		});
+		
+		this.currentBestCandidateSolutionFound = candidateSolution.getFitness();
+		this.currentGeneration = generation;
 	}
 
 	public static void main(String[] args) {
@@ -167,7 +174,11 @@ public final class JavaOneTSPDemo {
 		enableStopButton(false);
 
 		JOptionPane.showMessageDialog(frame,
-				"The Evolutionary Algorithm has finished.");
+				"The Evolutionary Algorithm has finished.\n\n" +
+				"Best Candidate Solution Found: " + currentBestCandidateSolutionFound + ".\n" +
+						"In number of generations: " + currentGeneration + "\n\n", 
+						"Done!",
+						JOptionPane.PLAIN_MESSAGE);
 
 	}
 }
