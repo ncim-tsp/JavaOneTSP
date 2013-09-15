@@ -88,7 +88,7 @@ public final class TSPUtils {
 	public static final void buildCitiesLayer(RenderableLayer layer, List<City> cities) {
         ShapeAttributes foregroundAttrs = new BasicShapeAttributes();
         foregroundAttrs.setOutlineMaterial(new Material(Color.RED));
-        foregroundAttrs.setOutlineWidth(2);
+        foregroundAttrs.setOutlineWidth(4);
 
         List<LatLon> locations = new ArrayList<LatLon>();
         for (City city : cities) {

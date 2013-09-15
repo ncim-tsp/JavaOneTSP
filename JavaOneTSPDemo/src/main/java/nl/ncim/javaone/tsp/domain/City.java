@@ -48,8 +48,6 @@ public class City {
 	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 	    long dist = Math.round(earthRadius * c * 1.609344);
 	    
-	    System.out.println("Distance between " + this.name + " and " + otherCity.name + " is " + dist + " km");
-	    
 		return dist;
 	}
 }
