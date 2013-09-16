@@ -21,6 +21,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -89,6 +90,11 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 	private JPanel algorithmInfoPanel;
 	private JLabel currentGenerationLabel;
 	private JLabel currentFitnessLabel;
+	private JComboBox predefinedSetsComboBox;
+
+	private enum PredefinedSet {
+		NONE, LOW, MEDIUM, HIGH;
+	}
 
 	public AlgorithmUI(JavaOneTSPDemo demo) {
 		this.demo = demo;
@@ -110,7 +116,7 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 
 		// Add the buttons
 		addButtonPanelToMainPanel(mainPanel);
-		
+
 		// Add the algorithm info panel
 		addAlgorithmInfoPanelToMainPanel(mainPanel);
 
@@ -120,28 +126,28 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 	}
 
 	private void addAlgorithmInfoPanelToMainPanel(JPanel mainPanel) {
-		
+
 		JPanel algorithmPaddingPanel = new JPanel();
-		algorithmPaddingPanel.setBorder(new EmptyBorder(10, 10, 50, 10) );
+		algorithmPaddingPanel.setBorder(new EmptyBorder(10, 10, 50, 10));
 		algorithmInfoPanel = new JPanel();
 		algorithmInfoPanel.setPreferredSize(new Dimension(290, 100));
 
 		algorithmInfoPanel.setBorder(BorderFactory
 				.createTitledBorder("Evolutionary Algorithm Runtime Info"));
-		
-		algorithmInfoPanel.setLayout(new GridLayout(2,1));
-		
-		currentGenerationLabel = new JLabel(JavaOneTSPDemoText.LABEL_CURRENT_GENERATION
-				+ ": " + 0);
+
+		algorithmInfoPanel.setLayout(new GridLayout(2, 1));
+
+		currentGenerationLabel = new JLabel(
+				JavaOneTSPDemoText.LABEL_CURRENT_GENERATION + ": " + 0);
 		algorithmInfoPanel.add(currentGenerationLabel);
-		
-		currentFitnessLabel = new JLabel(JavaOneTSPDemoText.LABEL_CURRENT_FITNESS
-				+ ": ");
+
+		currentFitnessLabel = new JLabel(
+				JavaOneTSPDemoText.LABEL_CURRENT_FITNESS + ": ");
 		algorithmInfoPanel.add(currentFitnessLabel);
-		
+
 		algorithmPaddingPanel.add(algorithmInfoPanel);
 		mainPanel.add(algorithmPaddingPanel, BorderLayout.SOUTH);
-		
+
 	}
 
 	private void addButtonPanelToMainPanel(JPanel mainPanel) {
@@ -155,30 +161,31 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 
 		buttonPanel.add(startButton);
 		buttonPanel.add(stopButton);
-		
+
 		mainPanel.add(buttonPanel, BorderLayout.CENTER);
 	}
 
 	private void addConfigToMainPanel(JPanel mainPanel) {
 		JPanel configPaddingPanel = new JPanel();
-		configPaddingPanel.setBorder(new EmptyBorder(10, 10, 50, 10) );
-		
+		configPaddingPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
 		configPanel = new JPanel();
 		configPanel.setBorder(BorderFactory
 				.createTitledBorder("Evolutionary Algorithm Settings"));
-		
-		
+
 		configPaddingPanel.add(configPanel);
 		mainPanel.add(configPaddingPanel, BorderLayout.NORTH);
 
 		configPanel.setPreferredSize(new Dimension(300, 600));
-		configPanel.setLayout(new GridLayout(12, 2));
+		configPanel.setLayout(new GridLayout(14, 2));
 
 		addMutationProbabilityToConfig();
 		addPopulationSizeToConfig();
 		addParentSelectionSizeToConfig();
 		addNrOfGenerationsToConfig();
 		addFitnessThresholdToConfig();
+
+		addPredefinedSetsToConfig();
 	}
 
 	private void addMutationProbabilityToConfig() {
@@ -192,6 +199,7 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 			public void stateChanged(ChangeEvent ce) {
 				JSlider slider = (JSlider) ce.getSource();
 				if (slider.getValueIsAdjusting()) {
+					predefinedSetsComboBox.setSelectedItem(PredefinedSet.NONE);
 					String sliderValue = String.valueOf(slider.getValue());
 					mutationProbLabel
 							.setText(JavaOneTSPDemoText.LABEL_MUTATION_PROB
@@ -220,6 +228,7 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 			public void stateChanged(ChangeEvent ce) {
 				JSlider slider = (JSlider) ce.getSource();
 				if (slider.getValueIsAdjusting()) {
+					predefinedSetsComboBox.setSelectedItem(PredefinedSet.NONE);
 					String sliderValue = String.valueOf(slider.getValue());
 					populationSize
 							.setText(JavaOneTSPDemoText.LABEL_POPULATION_SIZE
@@ -248,6 +257,7 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 			public void stateChanged(ChangeEvent ce) {
 				JSlider slider = (JSlider) ce.getSource();
 				if (slider.getValueIsAdjusting()) {
+					predefinedSetsComboBox.setSelectedItem(PredefinedSet.NONE);
 					String sliderValue = String.valueOf(slider.getValue());
 					parentSelectionSize
 							.setText(JavaOneTSPDemoText.LABEL_PARENT_SELECTION_SIZE
@@ -276,6 +286,7 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 			public void stateChanged(ChangeEvent ce) {
 				JSlider slider = (JSlider) ce.getSource();
 				if (slider.getValueIsAdjusting()) {
+					predefinedSetsComboBox.setSelectedItem(PredefinedSet.NONE);
 					String sliderValue = String.valueOf(slider.getValue());
 					nrOfGenerations
 							.setText(JavaOneTSPDemoText.LABEL_NR_OF_GENERATIONS
@@ -305,6 +316,7 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 			public void stateChanged(ChangeEvent ce) {
 				JSlider slider = (JSlider) ce.getSource();
 				if (slider.getValueIsAdjusting()) {
+					predefinedSetsComboBox.setSelectedItem(PredefinedSet.NONE);
 					String sliderValue = String.valueOf(slider.getValue());
 					fitnessThreshold
 							.setText(JavaOneTSPDemoText.LABEL_FITNESS_THRESHOLD
@@ -322,6 +334,19 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 		configPanel.add(emptyLabel);
 	}
 
+	private void addPredefinedSetsToConfig() {
+		JLabel predefinedSet = new JLabel(
+				JavaOneTSPDemoText.LABEL_PREDEFINED_SET);
+		configPanel.add(predefinedSet);
+		configPanel.add(emptyLabel);
+
+		predefinedSetsComboBox = new JComboBox(PredefinedSet.values());
+		predefinedSetsComboBox.addActionListener(this);
+
+		configPanel.add(predefinedSetsComboBox);
+		configPanel.add(emptyLabel);
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		Object eventSource = event.getSource();
@@ -329,7 +354,7 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 
 			startButton.setEnabled(false);
 			stopButton.setEnabled(true);
-			
+
 			algorithm = new Algorithm(demo, mutationProbability.getValue(),
 					populationSizeSlide.getValue(),
 					nrOfGenerationsSlide.getValue(),
@@ -339,8 +364,57 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 		} else if (eventSource.equals(stopButton)) {
 			algorithm.stopAlgorithm();
 			demo.reset();
+		} else if (eventSource.equals(predefinedSetsComboBox)) {
+			setPredefinedSet((PredefinedSet) predefinedSetsComboBox
+					.getSelectedItem());
 		}
+	}
 
+	private void setPredefinedSet(PredefinedSet selectedItem) {
+		switch (selectedItem) {
+		case LOW:
+			System.out.println("Selected LOW predefined set");
+			setSettings(10,100,1000,10000,10);
+			break;
+
+		case MEDIUM:
+			System.out.println("Selected MEDIUM predefined set");
+			setSettings(50,500,2000,9000,50);
+			break;
+
+		case HIGH:
+			System.out.println("Selected HIGH predefined set");
+			setSettings(90,1000,3000,9000,100);
+		case NONE:
+			// do nothing
+		default:
+		}
+	}
+
+	private void setSettings(int mutationProbabilityValue,
+			int populationSizeValue, int nrOfGenerationsValue,
+			int fitnessThresholdValue, int parentSelectionSizeValue) {
+		
+		mutationProbability.setValue(mutationProbabilityValue);
+		mutationProbLabel.setText(JavaOneTSPDemoText.LABEL_MUTATION_PROB + ": "
+				+ mutationProbabilityValue);
+
+		populationSizeSlide.setValue(populationSizeValue);
+		populationSize.setText(JavaOneTSPDemoText.LABEL_POPULATION_SIZE + ": "
+				+ populationSizeValue);
+
+		nrOfGenerationsSlide.setValue(nrOfGenerationsValue);
+		nrOfGenerations.setText(JavaOneTSPDemoText.LABEL_NR_OF_GENERATIONS
+				+ ": " + nrOfGenerationsValue);
+
+		fitnessThresholdsSlide.setValue(fitnessThresholdValue);
+		fitnessThreshold.setText(JavaOneTSPDemoText.LABEL_FITNESS_THRESHOLD
+				+ ": " + fitnessThresholdValue);
+
+		parentSelectionSizeSlide.setValue(parentSelectionSizeValue);
+		parentSelectionSize
+				.setText(JavaOneTSPDemoText.LABEL_PARENT_SELECTION_SIZE + ": "
+						+ parentSelectionSizeValue);
 	}
 
 	public void enableStartButton(boolean enable) {
@@ -352,10 +426,12 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 	}
 
 	public void showAlgorithmInfo(double fitness, int generation) {
-		currentGenerationLabel.setText(JavaOneTSPDemoText.LABEL_CURRENT_GENERATION
-				+ ": " + generation);
-		
-		String fitnessString = (Double.isNaN(fitness)) ? "" : String.valueOf(fitness);
+		currentGenerationLabel
+				.setText(JavaOneTSPDemoText.LABEL_CURRENT_GENERATION + ": "
+						+ generation);
+
+		String fitnessString = (Double.isNaN(fitness)) ? "" : String
+				.valueOf(fitness);
 		currentFitnessLabel.setText(JavaOneTSPDemoText.LABEL_CURRENT_FITNESS
 				+ ": " + fitnessString);
 	}

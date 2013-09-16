@@ -29,5 +29,6 @@ public class JavaOneTSPDemoText {
 	public static final String LABEL_PARENT_SELECTION_SIZE = "Nr of parents";
 	public static final String LABEL_CURRENT_GENERATION = "Current generation";
 	public static final String LABEL_CURRENT_FITNESS = "Fitness of best candidate solution";
+	public static final String LABEL_PREDEFINED_SET = "Predefined Set";
 	
 }
