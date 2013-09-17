@@ -25,7 +25,12 @@ public class CandidateSolution implements Comparable<CandidateSolution>
    /**
     * The route for the TSP
     */
-   private List<City> route;
+   private List<City> visitingCities;
+
+   /**
+    * The route for the TSP
+    */
+   private City baseCity;
 
    /**
     * The fitness of this CandidateSolution which consists of the total
@@ -33,15 +38,25 @@ public class CandidateSolution implements Comparable<CandidateSolution>
     */
    private double fitness;
 
+   private List<City> route;
+
    /**
     * CandidateSolution constructor
+    * @param baseCity 
     * 
-    * @param route
+    * @param visitingCities
     *            the route for the TSP
     */
-   public CandidateSolution(List<City> route)
+   public CandidateSolution(City baseCity, List<City> visitingCities)
    {
-      this.route = route;
+      this.baseCity = baseCity;
+      this.visitingCities = visitingCities;
+
+      /* create the route */
+      route = new ArrayList<City>();
+      route.add(baseCity); // start at base
+      route.addAll(visitingCities); // visit all cities
+      route.add(baseCity); // return to base
    }
 
    /**
@@ -83,9 +98,9 @@ public class CandidateSolution implements Comparable<CandidateSolution>
       /* initialize total distance */
       double totalDistance = 0;
 
-      /*
-       * For all Cities in the route (except the last one) get the distance
-       * between this City and the next and add it to the totalDistance
+      /* 
+       * For all Cities in the route (except the last one) get the distance between this 
+       * City and the next and add it to the totalDistance
        */
       for(int i = 0; i < route.size() - 1; i++)
       {
@@ -97,6 +112,7 @@ public class CandidateSolution implements Comparable<CandidateSolution>
 
       /* store totalDistance as this candidate solution's fitness */
       this.fitness = totalDistance;
+
    }
 
    /**
@@ -110,8 +126,8 @@ public class CandidateSolution implements Comparable<CandidateSolution>
    {
 
       /* get routes of both parents */
-      List<City> parentRoute1 = getRoute();
-      List<City> parentRoute2 = otherParent.getRoute();
+      List<City> parentRoute1 = getVisitingCities();
+      List<City> parentRoute2 = otherParent.getVisitingCities();
 
       /* initialize the routes for the children */
       List<City> childRoute1 = new ArrayList<City>();
@@ -137,14 +153,21 @@ public class CandidateSolution implements Comparable<CandidateSolution>
       crossFill(childRoute2, parentRoute1, cutIndex);
 
       /* create new children using the new children routes */
-      CandidateSolution child1 = new CandidateSolution(childRoute1);
-      CandidateSolution child2 = new CandidateSolution(childRoute2);
+      CandidateSolution child1 = new CandidateSolution(baseCity, childRoute1);
+      CandidateSolution child2 = new CandidateSolution(baseCity, childRoute2);
 
       /* put the children in a list and return it */
       List<CandidateSolution> children = new ArrayList<CandidateSolution>();
       children.add(child1);
       children.add(child2);
       return children;
+   }
+
+   /**
+    */
+   private List<City> getVisitingCities()
+   {
+      return visitingCities;
    }
 
    /**
@@ -202,22 +225,22 @@ public class CandidateSolution implements Comparable<CandidateSolution>
       Random random = new Random();
 
       /* randomly select two indices in the route */
-      int indexFirstCity = random.nextInt(route.size());
-      int indexSecondCity = random.nextInt(route.size());
+      int indexFirstCity = random.nextInt(visitingCities.size());
+      int indexSecondCity = random.nextInt(visitingCities.size());
 
       /* Make sure they are different */
       while(indexFirstCity == indexSecondCity)
       {
-         indexSecondCity = random.nextInt(route.size());
+         indexSecondCity = random.nextInt(visitingCities.size());
       }
 
       /* retrieve the Cities on the given indices */
-      City firstCity = route.get(indexFirstCity);
-      City secondCity = route.get(indexSecondCity);
+      City firstCity = visitingCities.get(indexFirstCity);
+      City secondCity = visitingCities.get(indexSecondCity);
 
       /* Changer! */
-      route.set(indexFirstCity, secondCity);
-      route.set(indexSecondCity, firstCity);
+      visitingCities.set(indexFirstCity, secondCity);
+      visitingCities.set(indexSecondCity, firstCity);
 
       calculateFitness(); // fitness changes. Since we are doing caching:
       // recalculate!
@@ -233,7 +256,7 @@ public class CandidateSolution implements Comparable<CandidateSolution>
       builder.append(getFitness());
       builder.append("] [route=");
 
-      for(City city : route)
+      for(City city : visitingCities)
       {
          builder.append(city);
          builder.append(",");
