@@ -462,7 +462,7 @@ public class AlgorithmUI extends JPanel implements ActionListener
       parentSelectionSizeSlide.setValue(parentSelectionSizeValue);
       parentSelectionSize.setText(JavaOneTSPDemoText.LABEL_PARENT_SELECTION_SIZE + ": " + parentSelectionSizeValue);
 
-      parentPoolSizeSlide.setValue(parentSelectionSizeValue);
+      parentPoolSizeSlide.setValue(parentPoolSizeValue);
       parentPoolSize.setText(JavaOneTSPDemoText.LABEL_PARENT_POOL_SIZE + ": " + parentPoolSizeValue);
    }
 
