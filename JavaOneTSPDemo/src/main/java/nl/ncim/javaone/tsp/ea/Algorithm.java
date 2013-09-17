@@ -214,23 +214,30 @@ public class Algorithm
    }
 
    /**
-    * Select the x best candidate solutions from the population
+    * Select the x best candidate solutions from a randomly selected
+    * pool from the population
     * 
-    * @param nrParentsToBeSelected
-    *            the number of parents to be selected
     * @return parents a list of the chosen parents
     */
    private List<CandidateSolution> parentSelection()
    {
 
+	  List<CandidateSolution> tempPopulation = new ArrayList<CandidateSolution>(population);
       List<CandidateSolution> randomCandidates = new ArrayList<CandidateSolution>();
 
       Random random = new Random();
       for(int i = 0; i <= parentPoolSize; i++)
       {
-         int randomlySelectedIndex = random.nextInt(population.size());
-         CandidateSolution randomSelection = population.get(randomlySelectedIndex);
+         
+    	 /* select a random candidate solution from the temp population */
+    	 int randomlySelectedIndex = random.nextInt(tempPopulation.size());
+         CandidateSolution randomSelection = tempPopulation.get(randomlySelectedIndex);
+         
+         
          randomCandidates.add(randomSelection);
+         
+         /* delete the candidate from the temp population, so we can't pick it again */
+         tempPopulation.remove(randomlySelectedIndex);
       }
 
       /* Sort the population so that the best candidates are up front */
