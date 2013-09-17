@@ -25,6 +25,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -114,21 +115,32 @@ public class AlgorithmUI extends JPanel implements ActionListener
       // Add the main panel
       JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
 
-      // Add the config panel to main
-      addConfigToMainPanel(mainPanel);
+      JTabbedPane tabbedPane = new JTabbedPane();
 
-      // Add the buttons
-      addButtonPanelToMainPanel(mainPanel);
+      // Add the config panel to tabbedPane
+      addConfigToMainPanel(tabbedPane);
+
+      JPanel runPanelWrapper = new JPanel(new BorderLayout(10, 10));
+
+      JPanel runPanel = new JPanel(new GridLayout(2, 1));
+      runPanelWrapper.add(runPanel, BorderLayout.NORTH);
+      runPanelWrapper.add(new JLabel(), BorderLayout.CENTER);
 
       // Add the algorithm info panel
-      addAlgorithmInfoPanelToMainPanel(mainPanel);
+      addAlgorithmInfoPanelToMainPanel(runPanel);
 
+      // Add the buttons
+      addButtonPanelToMainPanel(runPanel);
+
+      tabbedPane.add("Run EA", runPanelWrapper);
+
+      mainPanel.add(tabbedPane);
       this.add(mainPanel, BorderLayout.CENTER);
 
       this.setVisible(true);
    }
 
-   private void addAlgorithmInfoPanelToMainPanel(JPanel mainPanel)
+   private void addAlgorithmInfoPanelToMainPanel(JPanel runPanel)
    {
 
       JPanel algorithmPaddingPanel = new JPanel();
@@ -147,14 +159,14 @@ public class AlgorithmUI extends JPanel implements ActionListener
       algorithmInfoPanel.add(currentFitnessLabel);
 
       algorithmPaddingPanel.add(algorithmInfoPanel);
-      mainPanel.add(algorithmPaddingPanel, BorderLayout.SOUTH);
+      runPanel.add(algorithmPaddingPanel);
 
    }
 
-   private void addButtonPanelToMainPanel(JPanel mainPanel)
+   private void addButtonPanelToMainPanel(JPanel runPanel)
    {
       buttonPanel = new JPanel();
-
+      buttonPanel.setBorder(new EmptyBorder(10, 10, 50, 10));
       startButton = new JButton(JavaOneTSPDemoText.BUTTON_START_ALGORITHM);
       startButton.addActionListener(this);
       stopButton = new JButton(JavaOneTSPDemoText.BUTTON_STOP_ALGORITHM);
@@ -164,10 +176,10 @@ public class AlgorithmUI extends JPanel implements ActionListener
       buttonPanel.add(startButton);
       buttonPanel.add(stopButton);
 
-      mainPanel.add(buttonPanel, BorderLayout.CENTER);
+      runPanel.add(buttonPanel);
    }
 
-   private void addConfigToMainPanel(JPanel mainPanel)
+   private void addConfigToMainPanel(JTabbedPane tabbedPane)
    {
       JPanel configPaddingPanel = new JPanel();
       configPaddingPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -176,7 +188,6 @@ public class AlgorithmUI extends JPanel implements ActionListener
       configPanel.setBorder(BorderFactory.createTitledBorder("Evolutionary Algorithm Settings"));
 
       configPaddingPanel.add(configPanel);
-      mainPanel.add(configPaddingPanel, BorderLayout.NORTH);
 
       configPanel.setPreferredSize(new Dimension(300, 600));
       configPanel.setLayout(new GridLayout(14, 2));
@@ -188,6 +199,8 @@ public class AlgorithmUI extends JPanel implements ActionListener
       addFitnessThresholdToConfig();
 
       addPredefinedSetsToConfig();
+
+      tabbedPane.addTab("Settings", configPaddingPanel);
    }
 
    private void addMutationProbabilityToConfig()
