@@ -93,6 +93,8 @@ public class AlgorithmUI extends JPanel implements ActionListener
    private JLabel currentGenerationLabel;
    private JLabel currentFitnessLabel;
    private JComboBox predefinedSetsComboBox;
+   private JLabel parentPoolSize;
+   private JSlider parentPoolSizeSlide;
 
    private enum PredefinedSet
    {
@@ -189,11 +191,12 @@ public class AlgorithmUI extends JPanel implements ActionListener
 
       configPaddingPanel.add(configPanel);
 
-      configPanel.setPreferredSize(new Dimension(300, 600));
-      configPanel.setLayout(new GridLayout(14, 2));
+      configPanel.setPreferredSize(new Dimension(300, 700));
+      configPanel.setLayout(new GridLayout(16, 2));
 
       addMutationProbabilityToConfig();
       addPopulationSizeToConfig();
+      addParentPoolSizeToConfig();
       addParentSelectionSizeToConfig();
       addNrOfGenerationsToConfig();
       addFitnessThresholdToConfig();
@@ -263,11 +266,11 @@ public class AlgorithmUI extends JPanel implements ActionListener
 
    private void addParentSelectionSizeToConfig()
    {
-      parentSelectionSize = new JLabel(JavaOneTSPDemoText.LABEL_PARENT_SELECTION_SIZE + ": " + 10);
+      parentSelectionSize = new JLabel(JavaOneTSPDemoText.LABEL_PARENT_SELECTION_SIZE + ": " + 6);
       configPanel.add(parentSelectionSize);
       configPanel.add(emptyLabel);
 
-      parentSelectionSizeSlide = new JSlider(JSlider.HORIZONTAL, 0, 100, 10);
+      parentSelectionSizeSlide = new JSlider(JSlider.HORIZONTAL, 0, 100, 6);
       parentSelectionSizeSlide.addChangeListener(new ChangeListener() {
          public void stateChanged(ChangeEvent ce)
          {
@@ -288,6 +291,35 @@ public class AlgorithmUI extends JPanel implements ActionListener
       parentSelectionSizeSlide.setPaintLabels(true);
 
       configPanel.add(parentSelectionSizeSlide);
+   }
+
+   private void addParentPoolSizeToConfig()
+   {
+      parentPoolSize = new JLabel(JavaOneTSPDemoText.LABEL_PARENT_POOL_SIZE + ": " + 10);
+      configPanel.add(parentPoolSize);
+      configPanel.add(emptyLabel);
+
+      parentPoolSizeSlide = new JSlider(JSlider.HORIZONTAL, 0, 100, 10);
+      parentPoolSizeSlide.addChangeListener(new ChangeListener() {
+         public void stateChanged(ChangeEvent ce)
+         {
+            JSlider slider = (JSlider) ce.getSource();
+            if(slider.getValueIsAdjusting())
+            {
+               predefinedSetsComboBox.setSelectedItem(PredefinedSet.NONE);
+               String sliderValue = String.valueOf(slider.getValue());
+               parentPoolSize.setText(JavaOneTSPDemoText.LABEL_PARENT_POOL_SIZE + ": " + sliderValue);
+            }
+         }
+      });
+
+      // Turn on labels at major tick marks.
+      parentPoolSizeSlide.setMajorTickSpacing(20);
+      parentPoolSizeSlide.setMinorTickSpacing(6);
+      parentPoolSizeSlide.setPaintTicks(true);
+      parentPoolSizeSlide.setPaintLabels(true);
+
+      configPanel.add(parentPoolSizeSlide);
    }
 
    private void addNrOfGenerationsToConfig()
@@ -372,7 +404,8 @@ public class AlgorithmUI extends JPanel implements ActionListener
          stopButton.setEnabled(true);
 
          algorithm = new Algorithm(demo, mutationProbability.getValue(), populationSizeSlide.getValue(),
-               nrOfGenerationsSlide.getValue(), fitnessThresholdsSlide.getValue(), parentSelectionSizeSlide.getValue());
+               nrOfGenerationsSlide.getValue(), fitnessThresholdsSlide.getValue(), parentSelectionSizeSlide.getValue(),
+               parentPoolSizeSlide.getValue());
          algorithm.startAlgorithm();
       }
       else if(eventSource.equals(stopButton))
@@ -392,17 +425,17 @@ public class AlgorithmUI extends JPanel implements ActionListener
       {
          case LOW:
             System.out.println("Selected LOW predefined set");
-            setSettings(10, 100, 5000, 10000, 10);
+            setSettings(10, 100, 5000, 10000, 10, 6);
             break;
 
          case MEDIUM:
             System.out.println("Selected MEDIUM predefined set");
-            setSettings(50, 500, 10000, 9000, 50);
+            setSettings(50, 500, 10000, 9000, 50, 30);
             break;
 
          case HIGH:
             System.out.println("Selected HIGH predefined set");
-            setSettings(90, 1000, 20000, 9000, 100);
+            setSettings(90, 1000, 20000, 9000, 100, 50);
             break;
          case NONE:
             // do nothing
@@ -411,7 +444,7 @@ public class AlgorithmUI extends JPanel implements ActionListener
    }
 
    private void setSettings(int mutationProbabilityValue, int populationSizeValue, int nrOfGenerationsValue,
-         int fitnessThresholdValue, int parentSelectionSizeValue)
+         int fitnessThresholdValue, int parentPoolSizeValue, int parentSelectionSizeValue)
    {
 
       mutationProbability.setValue(mutationProbabilityValue);
@@ -428,6 +461,9 @@ public class AlgorithmUI extends JPanel implements ActionListener
 
       parentSelectionSizeSlide.setValue(parentSelectionSizeValue);
       parentSelectionSize.setText(JavaOneTSPDemoText.LABEL_PARENT_SELECTION_SIZE + ": " + parentSelectionSizeValue);
+
+      parentPoolSizeSlide.setValue(parentSelectionSizeValue);
+      parentPoolSize.setText(JavaOneTSPDemoText.LABEL_PARENT_POOL_SIZE + ": " + parentPoolSizeValue);
    }
 
    public void enableStartButton(boolean enable)

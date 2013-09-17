@@ -65,6 +65,11 @@ public class Algorithm
    private int parentSelectionSize;
 
    /**
+    * Pool of CandidateSolution from which a number of parents will be selected for reproduction (each generation)
+    */
+   private int parentPoolSize;
+
+   /**
     * Constructor for the Evolutionary Algorithm
     * 
     * @param view
@@ -73,9 +78,10 @@ public class Algorithm
     * @param nrOfGenerations
     * @param fitnessThreshold
     * @param parentSelectionSize
+    * @param parentPoolSize 
     */
    public Algorithm(JavaOneTSPDemo view, int mutationProbability, int populationSize, int nrOfGenerations,
-         int fitnessThreshold, int parentSelectionSize)
+         int fitnessThreshold, int parentSelectionSize, int parentPoolSize)
    {
       this.view = view;
       this.mutationProbability = mutationProbability;
@@ -83,6 +89,7 @@ public class Algorithm
       this.nrOfGenerations = nrOfGenerations;
       this.fitnessThreshold = fitnessThreshold;
       this.parentSelectionSize = parentSelectionSize;
+      this.parentPoolSize = parentPoolSize;
    }
 
    /**
@@ -219,7 +226,7 @@ public class Algorithm
       List<CandidateSolution> randomCandidates = new ArrayList<CandidateSolution>();
 
       Random random = new Random();
-      for(int i = 0; i <= 10; i++)
+      for(int i = 0; i <= parentPoolSize; i++)
       {
          int randomlySelectedIndex = random.nextInt(population.size());
          CandidateSolution randomSelection = population.get(randomlySelectedIndex);
@@ -241,17 +248,17 @@ public class Algorithm
    {
 
       /* initialize population list of CandidateSolutions */
-      List<CandidateSolution> population = new ArrayList<CandidateSolution>();
+      List<CandidateSolution> populationTemp = new ArrayList<CandidateSolution>();
 
       /* create a populationSize amount of random CandidateSolutions (routes) */
       for(int i = 0; i < populationSize; i++)
       {
          CandidateSolution candidateSolution = new CandidateSolution(TSPUtils.getBaseCity(),
                TSPUtils.getRandomizedCities());
-         population.add(candidateSolution);
+         populationTemp.add(candidateSolution);
       }
 
-      return population;
+      return populationTemp;
    }
 
    private void printPopulation()
