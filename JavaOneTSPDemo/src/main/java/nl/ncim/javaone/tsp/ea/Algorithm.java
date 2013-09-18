@@ -222,20 +222,21 @@ public class Algorithm
    private List<CandidateSolution> parentSelection()
    {
 
-	  List<CandidateSolution> tempPopulation = new ArrayList<CandidateSolution>(population);
+      List<CandidateSolution> tempPopulation = new ArrayList<CandidateSolution>(population);
       List<CandidateSolution> randomCandidates = new ArrayList<CandidateSolution>();
 
       Random random = new Random();
-      for(int i = 0; i <= parentPoolSize; i++)
+
+      /* create parent pool */
+      for(int i = 0; i < parentPoolSize; i++)
       {
-         
-    	 /* select a random candidate solution from the temp population */
-    	 int randomlySelectedIndex = random.nextInt(tempPopulation.size());
+
+         /* select a random candidate solution from the temp population */
+         int randomlySelectedIndex = random.nextInt(tempPopulation.size());
          CandidateSolution randomSelection = tempPopulation.get(randomlySelectedIndex);
-         
-         
+
          randomCandidates.add(randomSelection);
-         
+
          /* delete the candidate from the temp population, so we can't pick it again */
          tempPopulation.remove(randomlySelectedIndex);
       }
