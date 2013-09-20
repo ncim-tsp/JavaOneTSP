@@ -275,20 +275,35 @@ public class AlgorithmUI extends JPanel implements ActionListener
          public void stateChanged(ChangeEvent ce)
          {
             JSlider slider = (JSlider) ce.getSource();
-            if(slider.getValueIsAdjusting())
+            final int selectedParentSelectionSize = slider.getValue();
+
+            if(selectedParentSelectionSize % 2 != 0)
             {
-               predefinedSetsComboBox.setSelectedItem(PredefinedSet.NONE);
-               String sliderValue = String.valueOf(slider.getValue());
-               parentSelectionSize.setText(JavaOneTSPDemoText.LABEL_PARENT_SELECTION_SIZE + ": " + sliderValue);
+               slider.setValue(selectedParentSelectionSize + 1); // up one so we're always even.
+               return;
             }
+
+            final int selectedParentPoolSize = parentPoolSizeSlide.getValue();
+            if(selectedParentSelectionSize > selectedParentPoolSize)
+            {
+
+               /* the parentPoolSizeSlide value should not be smaller so set the parentPoolSizeSlide to this value */
+               parentPoolSizeSlide.setValue(selectedParentSelectionSize);
+            }
+
+            predefinedSetsComboBox.setSelectedItem(PredefinedSet.NONE);
+            String sliderValue = String.valueOf(selectedParentSelectionSize);
+            parentSelectionSize.setText(JavaOneTSPDemoText.LABEL_PARENT_SELECTION_SIZE + ": " + sliderValue);
+
          }
       });
 
       // Turn on labels at major tick marks.
       parentSelectionSizeSlide.setMajorTickSpacing(20);
-      parentSelectionSizeSlide.setMinorTickSpacing(6);
+      parentSelectionSizeSlide.setMinorTickSpacing(2);
       parentSelectionSizeSlide.setPaintTicks(true);
       parentSelectionSizeSlide.setPaintLabels(true);
+      parentSelectionSizeSlide.setSnapToTicks(true);
 
       configPanel.add(parentSelectionSizeSlide);
    }
@@ -304,12 +319,20 @@ public class AlgorithmUI extends JPanel implements ActionListener
          public void stateChanged(ChangeEvent ce)
          {
             JSlider slider = (JSlider) ce.getSource();
-            if(slider.getValueIsAdjusting())
+
+            final int selectedParentSize = parentSelectionSizeSlide.getValue();
+            final int selectedParentPoolSize = slider.getValue();
+            if(selectedParentSize > selectedParentPoolSize)
             {
-               predefinedSetsComboBox.setSelectedItem(PredefinedSet.NONE);
-               String sliderValue = String.valueOf(slider.getValue());
-               parentPoolSize.setText(JavaOneTSPDemoText.LABEL_PARENT_POOL_SIZE + ": " + sliderValue);
+
+               /* the parentPoolSizeSlide value should not be smaller so set the parentSelectionSizeSlide to this value */
+               parentSelectionSizeSlide.setValue(selectedParentPoolSize);
             }
+
+            predefinedSetsComboBox.setSelectedItem(PredefinedSet.NONE);
+
+            String sliderValue = String.valueOf(slider.getValue());
+            parentPoolSize.setText(JavaOneTSPDemoText.LABEL_PARENT_POOL_SIZE + ": " + sliderValue);
          }
       });
 
@@ -425,17 +448,17 @@ public class AlgorithmUI extends JPanel implements ActionListener
       {
          case LOW:
             System.out.println("Selected LOW predefined set");
-            setSettings(10, 100, 5000, 10000, 10, 6);
+            setSettings(25, 500, 5000, 11000, 100, 60);
             break;
 
          case MEDIUM:
             System.out.println("Selected MEDIUM predefined set");
-            setSettings(50, 500, 10000, 9000, 50, 30);
+            setSettings(50, 750, 10000, 11000, 50, 30);
             break;
 
          case HIGH:
             System.out.println("Selected HIGH predefined set");
-            setSettings(90, 1000, 20000, 9000, 100, 50);
+            setSettings(90, 1000, 20000, 11000, 10, 6);
             break;
          case NONE:
             // do nothing
