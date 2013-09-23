@@ -15,6 +15,7 @@ package nl.ncim.javaone.tsp.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -155,9 +156,12 @@ public class AlgorithmUI extends JPanel implements ActionListener
       algorithmInfoPanel.setLayout(new GridLayout(2, 1));
 
       currentGenerationLabel = new JLabel(JavaOneTSPDemoText.LABEL_CURRENT_GENERATION + ": " + 0);
+      Font biggerFont = currentGenerationLabel.getFont().deriveFont(13f);
+      currentGenerationLabel.setFont(biggerFont);
       algorithmInfoPanel.add(currentGenerationLabel);
 
       currentFitnessLabel = new JLabel(JavaOneTSPDemoText.LABEL_CURRENT_FITNESS + ": ");
+      currentFitnessLabel.setFont(biggerFont);
       algorithmInfoPanel.add(currentFitnessLabel);
 
       algorithmPaddingPanel.add(algorithmInfoPanel);

@@ -192,9 +192,11 @@ public final class JavaOneTSPDemo
       enableStartButton(true);
       enableStopButton(false);
 
-      JOptionPane.showMessageDialog(frame, "The Evolutionary Algorithm has finished.\n\n" +
-         "Best Candidate Solution Found: " + currentBestCandidateSolutionFound + ".\n" + "In number of generations: " +
-         currentGeneration + "\n\n", "Done!", JOptionPane.PLAIN_MESSAGE);
+      JOptionPane.showMessageDialog(frame,
+            "<html><span style='font-size:1.5em'>The Evolutionary Algorithm has finished.<br /><br />" +
+               "Best Candidate Solution Found: " + currentBestCandidateSolutionFound + ".<br />" +
+               "In number of generations: " + currentGeneration + "<br /><br /></span></html>", "Done!",
+            JOptionPane.PLAIN_MESSAGE);
 
    }
 }

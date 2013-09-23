@@ -181,6 +181,7 @@ public class Algorithm
                catch(InterruptedException e)
                {
                   view.reset();
+                  view.done();
                   return;
                }
             }
