@@ -36,152 +36,151 @@ import nl.ncim.bknopper.tspeademo.util.TSPUtils;
 
 public final class TSPEADemo {
 
-    private static final WorldWindowGLCanvas wwd = new WorldWindowGLCanvas();
+	private static final WorldWindowGLCanvas wwd = new WorldWindowGLCanvas();
 
-    private static final AppFrame frame = new AppFrame();
+	private static final AppFrame frame = new AppFrame();
 
-    private AlgorithmUI algorithmUI;
+	private AlgorithmUI algorithmUI;
 
-    private double currentBestCandidateSolutionFound;
-    private int currentGeneration;
+	private double currentBestCandidateSolutionFound;
+	private int currentGeneration;
 
-    public TSPEADemo() {
-	algorithmUI = new AlgorithmUI(this);
-	startView(algorithmUI);
-    }
-
-    private static class AppFrame extends JFrame {
-
-	private static final long serialVersionUID = 6954901339876266277L;
-	private RenderableLayer layer;
-
-	public AppFrame() {
-	    initializeWWD();
-	    initializeMenu();
+	public TSPEADemo() {
+		algorithmUI = new AlgorithmUI(this);
+		startView(algorithmUI);
 	}
 
-	private void initializeWWD() {
-	    wwd.setPreferredSize(new Dimension(900, 960));
-	    wwd.setModel(new BasicModel());
-	    wwd.getView().setEyePosition(
-		    Position.fromDegrees(52.18958, 5.29524, 6e6));
-	    layer = TSPUtils.createCitiesLayer("Cities");
-	    wwd.getModel().getLayers().add(layer);
-	}
+	private static class AppFrame extends JFrame {
 
-	private void initializeMenu() {
-	    JMenuBar menuBar = new JMenuBar();
-	    JMenu menu = new JMenu(TSPEADemoText.MENU_APPLICATION);
-	    menuBar.add(menu);
+		private static final long serialVersionUID = 6954901339876266277L;
+		private RenderableLayer layer;
 
-	    JMenuItem quitMenuItem = new JMenuItem(
-		    TSPEADemoText.MENU_ITEM_QUIT);
-	    quitMenuItem.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent ae) {
-		    System.exit(0);
+		public AppFrame() {
+			initializeWWD();
+			initializeMenu();
 		}
-	    });
-	    menu.add(quitMenuItem);
 
-	    this.setJMenuBar(menuBar);
+		private void initializeWWD() {
+			wwd.setPreferredSize(new Dimension(900, 960));
+			wwd.setModel(new BasicModel());
+			wwd.getView().setEyePosition(
+					Position.fromDegrees(52.18958, 5.29524, 6e6));
+			layer = TSPUtils.createCitiesLayer("Cities");
+			wwd.getModel().getLayers().add(layer);
+		}
+
+		private void initializeMenu() {
+			JMenuBar menuBar = new JMenuBar();
+			JMenu menu = new JMenu(TSPEADemoText.MENU_APPLICATION);
+			menuBar.add(menu);
+
+			JMenuItem quitMenuItem = new JMenuItem(TSPEADemoText.MENU_ITEM_QUIT);
+			quitMenuItem.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent ae) {
+					System.exit(0);
+				}
+			});
+			menu.add(quitMenuItem);
+
+			this.setJMenuBar(menuBar);
+		}
+
+		public void showRoute(List<City> route, double fitness) {
+
+			wwd.getModel().getLayers().remove(layer);
+			layer = TSPUtils.createCitiesLayer("Cities");
+			wwd.getModel().getLayers().add(layer);
+			TSPUtils.buildCitiesLayer(layer, route);
+			frame.setTitle("JavaOne TSP Demo. Fitness: " + fitness);
+		}
+
+		public void reset() {
+			wwd.getModel().getLayers().remove(layer);
+			layer = TSPUtils.createCitiesLayer("Cities");
+			wwd.getModel().getLayers().add(layer);
+
+			frame.setTitle("JavaOne TSP Demo.");
+		}
 	}
 
-	public void showRoute(List<City> route, double fitness) {
+	public void startView(final AlgorithmUI algorithmUI) {
+		try {
+			EventQueue.invokeAndWait(new Runnable() {
+				public void run() {
+					frame.setTitle("JavaOne TSP Demo");
+					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+					frame.setVisible(true);
 
-	    wwd.getModel().getLayers().remove(layer);
-	    layer = TSPUtils.createCitiesLayer("Cities");
-	    wwd.getModel().getLayers().add(layer);
-	    TSPUtils.buildCitiesLayer(layer, route);
-	    frame.setTitle("JavaOne TSP Demo. Fitness: " + fitness);
+					JSplitPane splitPane = new JSplitPane(
+							JSplitPane.HORIZONTAL_SPLIT);
+					splitPane.add(algorithmUI, JSplitPane.LEFT);
+					splitPane.add(wwd, JSplitPane.RIGHT);
+					frame.add(splitPane, BorderLayout.CENTER);
+					frame.pack();
+				}
+			});
+		} catch (InterruptedException ex) {
+			// ignore
+		} catch (InvocationTargetException ex) {
+			// ignore
+		}
+	}
+
+	public void showLastGeneration(final CandidateSolution candidateSolution,
+			final int generation) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				frame.showRoute(candidateSolution.getRoute(),
+						candidateSolution.getFitness());
+				algorithmUI.showAlgorithmInfo(candidateSolution.getFitness(),
+						generation);
+
+			}
+		});
+
+		this.currentBestCandidateSolutionFound = candidateSolution.getFitness();
+		this.currentGeneration = generation;
+	}
+
+	public static void main(String[] args) {
+		new TSPEADemo();
+	}
+
+	public void enableStartButton(boolean b) {
+		algorithmUI.enableStartButton(b);
+	}
+
+	public void enableStopButton(boolean b) {
+		algorithmUI.enableStopButton(b);
 	}
 
 	public void reset() {
-	    wwd.getModel().getLayers().remove(layer);
-	    layer = TSPUtils.createCitiesLayer("Cities");
-	    wwd.getModel().getLayers().add(layer);
+		enableStartButton(true);
+		enableStopButton(false);
 
-	    frame.setTitle("JavaOne TSP Demo.");
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				frame.reset();
+				algorithmUI.showAlgorithmInfo(Double.NaN, 0);
+			}
+		});
 	}
-    }
 
-    public void startView(final AlgorithmUI algorithmUI) {
-	try {
-	    EventQueue.invokeAndWait(new Runnable() {
-		public void run() {
-		    frame.setTitle("JavaOne TSP Demo");
-		    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		    frame.setVisible(true);
+	public void done() {
+		enableStartButton(true);
+		enableStopButton(false);
 
-		    JSplitPane splitPane = new JSplitPane(
-			    JSplitPane.HORIZONTAL_SPLIT);
-		    splitPane.add(algorithmUI, JSplitPane.LEFT);
-		    splitPane.add(wwd, JSplitPane.RIGHT);
-		    frame.add(splitPane, BorderLayout.CENTER);
-		    frame.pack();
-		}
-	    });
-	} catch (InterruptedException ex) {
-	    // ignore
-	} catch (InvocationTargetException ex) {
-	    // ignore
+		JOptionPane
+				.showMessageDialog(
+						frame,
+						"<html><span style='font-size:1.5em'>The Evolutionary Algorithm has finished.<br /><br />"
+								+ "Best Candidate Solution Found: "
+								+ currentBestCandidateSolutionFound
+								+ ".<br />"
+								+ "In number of generations: "
+								+ currentGeneration
+								+ "<br /><br /></span></html>", "Done!",
+						JOptionPane.PLAIN_MESSAGE);
+
 	}
-    }
-
-    public void showLastGeneration(final CandidateSolution candidateSolution,
-	    final int generation) {
-	EventQueue.invokeLater(new Runnable() {
-	    public void run() {
-		frame.showRoute(candidateSolution.getRoute(),
-			candidateSolution.getFitness());
-		algorithmUI.showAlgorithmInfo(candidateSolution.getFitness(),
-			generation);
-
-	    }
-	});
-
-	this.currentBestCandidateSolutionFound = candidateSolution.getFitness();
-	this.currentGeneration = generation;
-    }
-
-    public static void main(String[] args) {
-	new TSPEADemo();
-    }
-
-    public void enableStartButton(boolean b) {
-	algorithmUI.enableStartButton(b);
-    }
-
-    public void enableStopButton(boolean b) {
-	algorithmUI.enableStopButton(b);
-    }
-
-    public void reset() {
-	enableStartButton(true);
-	enableStopButton(false);
-
-	EventQueue.invokeLater(new Runnable() {
-	    public void run() {
-		frame.reset();
-		algorithmUI.showAlgorithmInfo(Double.NaN, 0);
-	    }
-	});
-    }
-
-    public void done() {
-	enableStartButton(true);
-	enableStopButton(false);
-
-	JOptionPane
-		.showMessageDialog(
-			frame,
-			"<html><span style='font-size:1.5em'>The Evolutionary Algorithm has finished.<br /><br />"
-				+ "Best Candidate Solution Found: "
-				+ currentBestCandidateSolutionFound
-				+ ".<br />"
-				+ "In number of generations: "
-				+ currentGeneration
-				+ "<br /><br /></span></html>", "Done!",
-			JOptionPane.PLAIN_MESSAGE);
-
-    }
 }
