@@ -1,2 +1,2 @@
-JavaOneTSP
+Evolutionary Algorithms Traveling Salesman Problem
 ==========
