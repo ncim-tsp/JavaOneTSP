@@ -14,6 +14,7 @@
 package nl.ncim.bknopper.tspeademo.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -109,7 +110,7 @@ public class AlgorithmUI extends JPanel implements ActionListener {
 		Dimension dimension = new Dimension(DEFAULT_LAUNCHER_WIDTH,
 				DEFAULT_LAUNCHER_HEIGHT);
 		this.setSize(dimension);
-
+		this.setBackground(Color.WHITE);
 		this.setLayout(new BorderLayout());
 
 		// Add the main panel

@@ -16,6 +16,7 @@ import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.RenderableLayer;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -29,6 +30,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
+import javax.swing.UIManager;
 
 import nl.ncim.bknopper.tspeademo.domain.City;
 import nl.ncim.bknopper.tspeademo.ea.CandidateSolution;
@@ -108,6 +110,7 @@ public final class TSPEADemo {
 			EventQueue.invokeAndWait(new Runnable() {
 				public void run() {
 					frame.setTitle("JavaOne TSP Demo");
+					frame.setBackground(Color.WHITE);
 					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					frame.setVisible(true);
 
@@ -142,9 +145,6 @@ public final class TSPEADemo {
 		this.currentGeneration = generation;
 	}
 
-	public static void main(String[] args) {
-		new TSPEADemo();
-	}
 
 	public void enableStartButton(boolean b) {
 		algorithmUI.enableStartButton(b);
@@ -182,5 +182,18 @@ public final class TSPEADemo {
 								+ "<br /><br /></span></html>", "Done!",
 						JOptionPane.PLAIN_MESSAGE);
 
+	}
+	
+	public static void main(String[] args) {
+		
+		/* Set the look and feel before we start anything */
+		try {
+            UIManager.installLookAndFeel("SeaGlass", "com.seaglasslookandfeel.SeaGlassLookAndFeel");
+            UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
+        } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+		
+		new TSPEADemo();
 	}
 }
